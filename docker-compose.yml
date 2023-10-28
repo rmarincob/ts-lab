@@ -2,12 +2,18 @@ version: '3'
 services:
   internet-gateway:
     build: ./gateway
+    networks:
+      - config-net
+      - backend-net
     ports:
       - "80:80"
     depends_on:
       - load-balancer
   load-balancer: 
     build: ./load-balancer
+    networks:
+      - config-net
+      - backend-net
     depends_on: 
       - backend1
       - backend2
@@ -17,13 +23,24 @@ services:
     hostname: server1
     ports: 
       - "90:9000"
+    networks:
+      - backend-net
   backend2:
     build: ./backend
     hostname: server2
     ports: 
       - "91:9000"
+    networks:
+      - backend-net
   backend3:
     build: ./backend
     hostname: server3
     ports: 
       - "92:9000"
+    networks:
+      - backend-net
+networks:
+  config-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
